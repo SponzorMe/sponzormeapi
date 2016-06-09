@@ -19,21 +19,13 @@ class UsersController extends Controller
         return User::all();
     }
     /**
-     * GET /users/{1}
+     * GET /users/{id}
      * @param integer $id
      * @return mixed
      */
     public function show($id)
     {
-        try {
-            return User::findOrFail($id);
-        } catch (ModelNotFoundException $e){ 
-            return response()->json([
-                'error' => [
-                    'message' => 'User not found'
-                ]
-            ], 404);
-        }
+        return User::findOrFail($id);
     }
     /**
     * POST /users

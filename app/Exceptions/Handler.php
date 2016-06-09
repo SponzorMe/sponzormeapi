@@ -64,6 +64,14 @@ class Handler extends ExceptionHandler
                 ];
             }
 
+            if ($e instanceof HttpException) {
+                $response['message'] = Response::$statusTexts[$e->getStatusCode()];
+                $response['status'] = $e->getStatusCode();
+            } else if ($e instanceof ModelNotFoundException) {
+                $response['message'] = Response::$statusTexts[Response::HTTP_NOT_FOUND]; 
+                $response['status'] = Response::HTTP_NOT_FOUND;
+            }
+
             return response()->json(['error' => $response], $response['status']);
 
         }

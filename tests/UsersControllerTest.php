@@ -37,12 +37,11 @@ class UsersControllerTest extends TestCase
     /** @test **/
     public function testShouldFailWhenUserIdDoesNotExist()
     {
-        $this->get('/users/999999')
+        $this->get('/users/999999', ['Accept' => 'application/json'])
         ->seeStatusCode(404)
         ->seeJson([
-            'error' => [
-                'message'=> 'User not found'
-            ]
+            'message' => 'Not Found',
+            'status'  => 404
         ]);
     }
 
