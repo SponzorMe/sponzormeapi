@@ -1,32 +1,33 @@
 <?php
 
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Laravel\Lumen\Testing\DatabaseMigrations;
 
 class UsersControllerTest extends TestCase
 {
+    use DatabaseMigrations;
     /** @test **/
-    public function testAllUsers()
+    public function testShouldReturnCollectionOfUsers()
     {
-        $this->get('/users')
-        ->seeJson([
-                'id' => 1,
-                'name' => 'Sebastian Gomez',
-                'email' => 'seagomezar@gmail.com',
-                'type' => 1
-        ])
-        ->seeStatusCode(200);
+        $users = factory('App\User', 2)->create();
+        $this->get('/users');
+        
+        foreach ($users as $user) {
+            $this->seeJson(['name'=> $user->name]);
+        }
     }
 
     /** @test **/
     public function testShouldReturnValidUser()
     {
-        $this->get('/users/1')
+        $user = factory('App\User')->create();
+        $this->get("/users/{$user->id}")
         ->seeStatusCode(200)
         ->seeJson([
-            'id' => 1,
-            'name' => 'Sebastian Gomez',
-            'email' => 'seagomezar@gmail.com',
-            'type' => 1
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'type' => $user->type
         ]);
         $data = json_decode($this->response->getContent(), true);
         $this->assertArrayHasKey('created_at', $data);
@@ -85,22 +86,24 @@ class UsersControllerTest extends TestCase
     /** @test **/
     public function testUpdateShouldOnlyChangeFillableFields()
     {
-        $this->notSeeInDatabase('users', [
-            'name' => 'Jonh Papa'
-        ]);
-
-        $this->put('users/1', [
-            'id' => 5,
+        $user = factory('App\User')->create([
             'name' => 'Jonh Papa',
             'email' => 'john@papa.com',
+            'type' => 1
+        ]);
+
+        $this->put("/users/{$user->id}", [
+            'id' => 5,
+            'name' => 'Jonh Papa 2',
+            'email' => 'john2@papa.com',
             'type' => 1
         ]);
         $this->seeStatusCode(200)->seeJson([
             'id' => 1,
-            'name' => 'Jonh Papa',
-            'email' => 'john@papa.com',
+            'name' => 'Jonh Papa 2',
+            'email' => 'john2@papa.com',
             'type' => 1
-        ])->seeInDatabase('users', ['name' => 'Jonh Papa']);
+        ])->seeInDatabase('users', ['name' => 'Jonh Papa 2']);
     }
 
     /** @test **/
@@ -124,13 +127,14 @@ class UsersControllerTest extends TestCase
     }
 
     /** @test **/
-    public function testDestroyShouldRemoveValidBook()
+    public function testDestroyShouldRemoveValidUser()
     {
+        $user = factory('App\User')->create();
         $this
-        ->delete('/users/1')
+        ->delete("/users/{$user->id}")
         ->seeStatusCode(204)
         ->isEmpty();
-        $this->notSeeInDatabase('users', ['id' => 1]);
+        $this->notSeeInDatabase('users', ['id' => $user->id]);
     }
     /** @test **/
     public function testDestroyShouldReturn404WithInvalidId()
