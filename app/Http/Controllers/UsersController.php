@@ -3,20 +3,18 @@
 namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Transformer\UserTransformer;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
-    public function __construct()
-    {
-        //
-    }
     /**
      * GET /users
      * @return array
      */
     public function index(){
-        return User::all();
+        return $this->collection(User::all(), new UserTransformer());
+        
     }
     /**
      * GET /users/{id}
@@ -25,7 +23,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        return User::findOrFail($id);
+        return $this->item(User::findOrFail($id), new UserTransformer());
     }
     /**
     * POST /users
@@ -34,7 +32,8 @@ class UsersController extends Controller
     */
     public function store(Request $request) {
             $user = User::create($request->all());
-            return response()->json(['created' => true], 201, [ 'Location' => route('users.show', ['id' => $user->id])]); 
+            $data = $this->item($user, new UserTransformer());
+            return response()->json($data, 201, ['Location'=> route('users.show', ['id'=>$user->id])]);
     }
     /**
     * PUT /users/{id}
@@ -55,7 +54,7 @@ class UsersController extends Controller
         }
         $user->fill($request->all());
         $user->save(); 
-        return $user;
+        return $this->item($user, new UserTransformer());
     }
     /**
     * DELETE /users/{id}
