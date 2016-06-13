@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Validator;
 use App\Transformer\UserTransformer;
 use Illuminate\Http\Request;
 
@@ -31,9 +32,22 @@ class UsersController extends Controller
     * @return \Symfony\Component\HttpFoundation\Response
     */
     public function store(Request $request) {
-            $user = User::create($request->all());
-            $data = $this->item($user, new UserTransformer());
-            return response()->json($data, 201, ['Location'=> route('users.show', ['id'=>$user->id])]);
+
+        $rules = [
+            'name' => 'required|max:255',
+            'email' => 'required',
+            'type' => 'required'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors()->toArray(), 422);
+        }    
+
+        $user = User::create($request->all());
+        $data = $this->item($user, new UserTransformer());
+        return response()->json($data, 201, ['Location'=> route('users.show', ['id'=>$user->id])]);
     }
     /**
     * PUT /users/{id}
@@ -52,6 +66,19 @@ class UsersController extends Controller
                 ] 
             ], 404);
         }
+        
+        $rules = [
+            'name' => 'required|max:255',
+            'email' => 'required',
+            'type' => 'required'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()) {
+            return response()->json($validator->errors()->toArray(), 422);
+        }   
+
         $user->fill($request->all());
         $user->save(); 
         return $this->item($user, new UserTransformer());
