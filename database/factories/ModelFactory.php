@@ -18,3 +18,11 @@ $factory->define(App\User::class, function ($faker) {
         'type' => rand(0,1)
     ];
 });
+
+$factory->define(App\Event::class, function ($faker) {
+    return [
+        'title' => join(" ", $faker->sentences(rand(1, 1))),
+        'description' => join(" ", $faker->sentences(rand(7, 9))),
+        'summary' => join(" ", $faker->sentences(rand(1, 3)))
+    ];
+});

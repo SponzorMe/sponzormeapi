@@ -15,6 +15,7 @@ $app->get('/', function () use ($app) {
     return $app->version();
 });
 
+/** @users **/
 $app->get('/users', 'UsersController@index');
 $app->get('/users/{id:[\d]+}', [
     'as'    => 'users.show',
@@ -23,3 +24,14 @@ $app->get('/users/{id:[\d]+}', [
 $app->post('/users', 'UsersController@store');
 $app->put('/users/{id:[\d]+}', 'UsersController@update');
 $app->delete('/users/{id:[\d]+}', 'UsersController@destroy');
+
+
+/** @events **/
+$app->get('/events', 'EventsController@index');
+$app->get('/events/{id:[\d]+}', [
+    'as'    => 'events.show',
+    'uses'  => 'EventsController@show'
+]);
+$app->post('/events', 'EventsController@store');
+$app->put('/events/{id:[\d]+}', 'EventsController@update');
+$app->delete('/events/{id:[\d]+}', 'EventsController@destroy');

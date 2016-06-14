@@ -1,13 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\User;
+use App\Event;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
-use App\Transformer\UserTransformer;
+use App\Transformer\EventTransformer;
 use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class EventsController extends Controller
 {
     /**
     * The validation rules
@@ -15,34 +15,38 @@ class UsersController extends Controller
     * @var array
     */
     protected $rules = [
-            'name' => 'required|max:255',
-            'email' => 'required',
-            'type' => 'required'
+            'title' => 'required|max:255',
+            'summary' => 'required',
+            'description' => 'required',
+            'user_id' => 'required|exists:users,id'
         ];
 
     /**
-     * GET /users
+     * GET /events
      * @return array
      */
     public function index(){
-        return $this->collection(User::all(), new UserTransformer());
-        
+        return $this->collection(Event::all(), new EventTransformer());
     }
+
     /**
-     * GET /users/{id}
+     * GET /events/{id}
      * @param integer $id
      * @return mixed
      */
     public function show($id)
     {
-        return $this->item(User::findOrFail($id), new UserTransformer());
+        return $this->item(Event::findOrFail($id), new EventTransformer());
     }
+
     /**
-    * POST /users
+    * POST /events
     * @param Request $request
     * @return \Symfony\Component\HttpFoundation\Response
     */
     public function store(Request $request) {
+
+        
 
         $validator = Validator::make($request->all(), $this->rules);
 
@@ -50,12 +54,12 @@ class UsersController extends Controller
             return response()->json($validator->errors()->toArray(), 422);
         }    
 
-        $user = User::create($request->all());
-        $data = $this->item($user, new UserTransformer());
-        return response()->json($data, 201, ['Location'=> route('users.show', ['id'=>$user->id])]);
+        $event = Event::create($request->all());
+        $data = $this->item($event, new EventTransformer());
+        return response()->json($data, 201, ['Location'=> route('events.show', ['id'=>$event->id])]);
     }
     /**
-    * PUT /users/{id}
+    * PUT /events/{id}
     *
     * @param Request $request
     * @param $id
@@ -63,11 +67,11 @@ class UsersController extends Controller
     */
     public function update(Request $request, $id) {
         try{
-            $user = User::findOrFail($id);
+            $event = Event::findOrFail($id);
         } catch (ModelNotFoundException $e) { 
             return response()->json([
                 'error' => [
-                    'message' => 'User not found'
+                    'message' => 'Event not found'
                 ] 
             ], 404);
         }
@@ -78,26 +82,26 @@ class UsersController extends Controller
             return response()->json($validator->errors()->toArray(), 422);
         }   
 
-        $user->fill($request->all());
-        $user->save(); 
-        return $this->item($user, new UserTransformer());
+        $event->fill($request->all());
+        $event->save(); 
+        return $this->item($event, new EventTransformer());
     }
     /**
-    * DELETE /users/{id}
+    * DELETE /events/{id}
     * @param $id
     * @return \Illuminate\Http\JsonResponse
     */
     public function destroy($id) {
         try{
-            $user = User::findOrFail($id);
+            $event = Event::findOrFail($id);
         } catch (ModelNotFoundException $e) { 
             return response()->json([
                 'error' => [
-                    'message' => 'User not found'
+                    'message' => 'Event not found'
                 ] 
             ], 404);
         }
-        $user->delete();
+        $event->delete();
         return response(null, 204);
     }
 }

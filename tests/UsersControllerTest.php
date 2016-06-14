@@ -218,9 +218,48 @@ class UsersControllerTest extends TestCase
 	/** @test **/
 	public function testDestroyShouldNotMatchInvalidRoute()
 	{
-		$this->delete('/books/this-is-invalid')->seeStatusCode(404);
+		$this->delete('/users/this-is-invalid')->seeStatusCode(404);
 	}
 	
+	/** @test **/
+	public function showOptionallyIncludesEvents()
+	{
+		$event = $this->eventFactory();
+		$user = $event->user;
+
+		$this->get(
+			"/users/{$user->id}?include=events", ['Accept'=>'application/json']
+		);
+
+		$body = json_decode($this->response->getContent(), true);
+
+		$this->assertARrayHasKey('data', $body);
+		$data = $body['data'];
+		$this->assertARrayHasKey('events', $data);
+		$this->assertArrayHasKey('data', $data['events']);
+		$this->assertCount(1, $data['events']['data']);
+
+		// See User Data
+		$this->seeJson([
+			'id' => $user->id,
+			'name' => $user->name,
+		]);
+
+		// Test included book Data (the first record)
+		$actual = $data['events']['data'][0];
+		$this->assertEquals($event->id, $actual['id']);
+		$this->assertEquals($event->title, $actual['title']);
+		$this->assertEquals($event->description, $actual['description']);
+		$this->assertEquals(
+			$event->created_at->toIso8601String(),
+			$actual['created_at']
+		);
+		$this->assertEquals(
+			$event->updated_at->toIso8601String(),
+			$actual['updated_at']
+		);
+
+	}
 	
 	
 	

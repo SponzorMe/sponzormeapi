@@ -7,6 +7,12 @@ use League\Fractal\TransformerAbstract;
 
 class UserTransformer extends TransformerAbstract
 {
+    protected $availableIncludes = ['events'];
+    
+    public function includeEvents(User $user)
+    {
+        return $this->collection($user->events, new EventTransformer());
+    }
     /**
      * Transform a User model into an array
      * 

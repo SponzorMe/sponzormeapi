@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class UsersTableSeeder extends Seeder
 {
     public function run(){
-        DB::table('users')->insert([
-            'name' => 'Sebastian Gomez',
-            'email' => 'seagomezar@gmail.com',
-            'type' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        ]);
+        factory(App\User::class, 10)->create()->each(function ($user) { 
+            $eventsCount = rand(1, 5);
+            while ($eventsCount > 0) { 
+                $user->events()->save(factory(App\Event::class)->make()); 
+                $eventsCount--;
+            }
+        });
     }
 }

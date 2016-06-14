@@ -39,4 +39,27 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
         $this->seeHasHeader($header)->assertRegExp($regexp, $this->response->headers->get($header));
         return $this; 
     }
+    /**
+    * Convenience method for creating a event with an organizer
+    *
+    * @param int $count
+    * @return mixed
+    */
+    protected function eventFactory($count = 1) {
+        $user = factory(\App\User::class)->create();
+        $events  = factory(\App\Event::class, $count)->make();
+
+        if ($count === 1) { 
+            $events->user()->associate($user);
+            $events->save();
+        }
+        else{
+            foreach ($events as $event) { 
+                $event->user()->associate($user); 
+                $event->save();
+            }
+        }
+
+        return $events;
+    }
 }

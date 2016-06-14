@@ -13,4 +13,8 @@ class User extends Model
     * @var array
     */
     protected $fillable = ['name', 'email', 'type'];
+
+    public function events() {
+        return $this->hasMany(Event::class); 
+    }
 }
