@@ -1,7 +1,8 @@
 <?php
 
+
 /*
-|--------------------------------------------------------------------------
+--------------------------------------------------------------------------
 | Application Routes
 |--------------------------------------------------------------------------
 |
@@ -12,8 +13,10 @@
 */
 
 $app->get('/', function () use ($app) {
-    return $app->version();
-});
+	return $app->version();
+}
+);
+
 
 /** @users **/
 $app->get('/users', 'UsersController@index');
@@ -26,6 +29,7 @@ $app->put('/users/{id:[\d]+}', 'UsersController@update');
 $app->delete('/users/{id:[\d]+}', 'UsersController@destroy');
 
 
+
 /** @events **/
 $app->get('/events', 'EventsController@index');
 $app->get('/events/{id:[\d]+}', [
@@ -35,3 +39,24 @@ $app->get('/events/{id:[\d]+}', [
 $app->post('/events', 'EventsController@store');
 $app->put('/events/{id:[\d]+}', 'EventsController@update');
 $app->delete('/events/{id:[\d]+}', 'EventsController@destroy');
+
+$app->group([
+    'prefix' => '/tags',
+    'namespace' => 'App\Http\Controllers'
+], function (\Laravel\Lumen\Application $app) {
+        $app->get('/{id:[\d]+}', [
+                'as' => 'tags.show',
+                'uses' => 'TagsController@show'
+            ]
+        );
+
+        $app->put('/{tagId:[\d]+}/events/{eventId:[\d]+}',
+                'TagsController@addEvent'
+        );
+        
+        $app->delete(
+                '/{tagId:[\d]+}/events/{eventId:[\d]+}',
+                'TagsController@removeEvent'
+        );
+    }
+);

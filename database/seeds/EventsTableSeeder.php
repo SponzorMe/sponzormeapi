@@ -4,7 +4,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class UsersTableSeeder extends Seeder
+class EventsTableSeeder extends Seeder
 {
     public function run(){
         factory(App\User::class, 10)->create()->each(function ($user) { 

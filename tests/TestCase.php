@@ -62,4 +62,23 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
 
         return $events;
     }
+    /**
+    * Convenience method for creating a event with tags
+    *
+    * @param int $count
+    * @return mixed
+    */
+    protected function tagFactory($eventCount = 2) {
+        if ($eventCount <= 1) {
+            throw new \RuntimeException('A bundle must have two or more books!');
+        }
+        $tag = factory(\App\Tag::class)->create();
+        $events  = $this->eventFactory($eventCount);
+
+        $events->each(function($event) use ($tag){
+            $tag->events()->attach($event);
+        });
+
+        return $tag;
+    }
 }
