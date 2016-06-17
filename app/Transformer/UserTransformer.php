@@ -26,6 +26,12 @@ class UserTransformer extends TransformerAbstract
              'name'         => $user->name,
              'email'        => $user->email,
              'type'         => $user->type,
+             'rating' => [
+                            'average' => (float) sprintf("%.2f", $user->ratings->avg('value')),
+                            'max' => (float) sprintf("%.2f", 5),
+                            'percent' => (float) sprintf("%.2f", ($user->ratings->avg('value') / 5) * 100),
+                            'count' => $user->ratings->count(),
+                          ],
              'created_at'   => $user->created_at->toIso8601String(),
              'updated_at'   => $user->updated_at->toIso8601String(),
              'released'     => $user->created_at->diffForHumans()

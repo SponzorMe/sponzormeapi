@@ -25,7 +25,8 @@ class UsersController extends Controller
      * @return array
      */
     public function index(){
-        return $this->collection(User::all(), new UserTransformer());
+        $users = User::with('ratings')->get();
+        return $this->collection($users, new UserTransformer());
         
     }
     /**

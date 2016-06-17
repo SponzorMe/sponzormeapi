@@ -60,3 +60,7 @@ $app->group([
         );
     }
 );
+
+// User ratings
+$app->post('/users/{id:[\d]+}/ratings', 'UsersRatingsController@store');
+$app->delete('/users/{userId:[\d]+}/ratings/{ratingId:[\d]+}', 'UsersRatingsController@destroy');
