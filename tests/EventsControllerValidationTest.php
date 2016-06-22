@@ -86,7 +86,8 @@ class EventsControllerValidationTest extends TestCase
             'title'=>$event->title,
             'description' =>$event->description,
             'summary' =>$event->summary,
-            'user_id' =>$event->user->id
+            'user_id' =>$event->user->id,
+            'type_id' =>$event->type->id
         ], ['Accept' => 'application/json']);
 
         $this->assertEquals(Response::HTTP_CREATED, $this->response->getStatusCode());
@@ -102,7 +103,8 @@ class EventsControllerValidationTest extends TestCase
             'title'=>$event->title,
             'description' =>$event->description,
             'summary' =>$event->summary,
-            'user_id' =>$event->user->id
+            'user_id' =>$event->user->id,
+            'type_id' =>$event->type->id
         ], ['Accept' => 'application/json']);
 
         $this->assertEquals(Response::HTTP_OK, $this->response->getStatusCode());

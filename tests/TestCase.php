@@ -1,10 +1,13 @@
 <?php
 
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Laravel\Lumen\Testing\DatabaseMigrations;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class TestCase extends Laravel\Lumen\Testing\TestCase
 {
     use MockeryPHPUnitIntegration;
+
     /**
      * Creates the application.
      *
@@ -48,14 +51,22 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
     protected function eventFactory($count = 1) {
         $user = factory(\App\User::class)->create();
         $events  = factory(\App\Event::class, $count)->make();
-
+        
         if ($count === 1) { 
             $events->user()->associate($user);
+            $tags = factory(\App\Tag::class, rand(1,5))->create();
+				$tags->each(function ($tag) {
+					$tag->events()->attach($events);
+				});
             $events->save();
         }
         else{
             foreach ($events as $event) { 
-                $event->user()->associate($user); 
+                $event->user()->associate($user);
+                $tags = factory(\App\Tag::class, rand(1,5))->create();
+				$tags->each(function ($tag) {
+					$tag->events()->attach($event);
+				});
                 $event->save();
             }
         }

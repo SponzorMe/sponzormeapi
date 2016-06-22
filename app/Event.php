@@ -13,10 +13,13 @@ class Event extends Model
     *
     * @var array
     */
-    protected $fillable = ['title', 'description', 'summary', 'user_id'];
+    protected $fillable = ['title', 'description', 'summary', 'user_id', 'type_id', 'image', 'language', 'is_private', 'is_outstanding', 'country', 'place_name', 'place_id', 'latitude', 'longitude', 'address', 'start', 'end'];
 
     public function user() {
         return $this->belongsTo(User::class); 
+    }
+    public function type() {
+        return $this->belongsTo(Type::class); 
     }
     public function tags(){
         return $this->belongsToMany(Tag::class);

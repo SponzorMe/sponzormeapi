@@ -14,10 +14,10 @@ class AssocicateEventsWithUsers extends Migration
     {
         Schema::table('events', function (Blueprint $table) {
 
-            // Create the author_id column as an unsigned integer
+            // Create the user_id column as an unsigned integer
             $table->integer('user_id')->after('id')->unsigned();
 
-            // Create a basic index for the author_id column
+            // Create a basic index for the user_id column
             $table->index('user_id');
 
             // Create a foreign key constraint and cascade on delete.

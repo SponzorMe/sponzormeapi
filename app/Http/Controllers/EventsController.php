@@ -18,7 +18,8 @@ class EventsController extends Controller
             'title' => 'required|max:255',
             'summary' => 'required',
             'description' => 'required',
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
+            'type_id' => 'required|exists:types,id'
         ];
 
     /**

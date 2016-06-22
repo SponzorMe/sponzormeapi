@@ -33,7 +33,26 @@ class EventsControllerTest extends TestCase
                'title' => $event->title,
                'summary' => $event->summary,
                'description' => $event->description,
+			   'image' => $event->image,			   
+			   'language' => $event->language,
+			   //flags
+			   'is_private' => $event->is_private,
+			   'is_outstanding' => $event->is_outstanding,
+			   //Location attributes
+			   'country'=> $event->country,
+			   'place_name' => $event->place_name,
+			   'place_id' => $event->place_id,
+			   'latitude' => $event->latitude,
+			   'longitude' => $event->longitude,
+			   'address' => $event->address,
+			   //Foreigns
 			   'organizer' => $event->user->toArray(),
+			   'type' => $event->type->toArray(),
+			   'tags' => $event->tags->toArray(),
+			   //Dates
+			   'start' => Carbon::parse($event->start)->toIso8601String(),
+			   'end' => Carbon::parse($event->end)->toIso8601String(),
+			   'duration' => Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)),
                'released' => $event->created_at->diffForHumans(),
                'created_at' => $event->created_at->toIso8601String(),
                'updated_at' => $event->updated_at->toIso8601String()
@@ -57,7 +76,27 @@ class EventsControllerTest extends TestCase
         $this->assertEquals($event->title, $data['title']);
         $this->assertEquals($event->summary, $data['summary']);
         $this->assertEquals($event->description, $data['description']);
+		$this->assertEquals($event->image, $data['image']);
+		$this->assertEquals($event->language, $data['language']);
+		//flags
+		$this->assertEquals($event->is_private, $data['is_private']);
+		$this->assertEquals($event->is_outstanding, $data['is_outstanding']);
+		//Location attributes
+		$this->assertEquals($event->country, $data['country']);
+		$this->assertEquals($event->place_name, $data['place_name']);
+		$this->assertEquals($event->place_id, $data['place_id']);
+		$this->assertEquals($event->latitude, $data['latitude']);
+		$this->assertEquals($event->longitude, $data['longitude']);
+		$this->assertEquals($event->address, $data['address']);
+		//Foreigns
         $this->assertEquals($event->user->toArray(), $data['organizer']);
+		$this->assertEquals($event->type->toArray(), $data['type']);
+		$this->assertEquals($event->tags->toArray(), $data['tags']);
+		//Dates
+		$this->assertEquals(Carbon::parse($event->start)->toIso8601String(), $data['start']);
+		$this->assertEquals(Carbon::parse($event->end)->toIso8601String(), $data['end']);
+		$this->assertEquals(Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)), $data['duration']);
+		$this->assertEquals($event->created_at->diffForHumans(), $data['released']);
         $this->assertEquals($event->created_at->toIso8601String(), $data['created_at']);
         $this->assertEquals($event->updated_at->toIso8601String(), $data['updated_at']);
 	}
@@ -98,11 +137,14 @@ class EventsControllerTest extends TestCase
 				'type' => 0,
 			]
 		);
+		$type = factory(\App\Type::class)->create();
+		
 		$this->post('/events', [
 		            'title' => 'Jonh Smith',
 		            'summary' => 'jonh@smith.com',
 		            'description' => 'aaa aaa',
-					'user_id' => $user->id
+					'user_id' => $user->id,
+					'type_id' => $type->id
 		        ]);
 		
 		$body = json_decode($this->response->getContent(), true);
@@ -128,6 +170,7 @@ class EventsControllerTest extends TestCase
 	/** @test **/
 	public function testShouldRespondWith201AndLocationHeaderWhenSuccessful()
 	{
+		$type = factory(\App\Type::class)->create();
 		$user = factory(\App\User::class)->create(
 			[
 				'name' => 'Jonh Smith',
@@ -139,7 +182,8 @@ class EventsControllerTest extends TestCase
 		            'title' => 'Jonh Smith',
 		            'summary' => 'jonh@smith.com',
 		            'description' => 'aaa aaa',
-					'user_id' => $user->id
+					'user_id' => $user->id,
+					'type_id' => $type->id
 		        ]);
 		
 		$this->seeStatusCode(201)->seeHeaderWithRegExp('Location', '#/events/[\d]+$#');
@@ -149,6 +193,7 @@ class EventsControllerTest extends TestCase
 	/** @test **/
 	public function testUpdateShouldOnlyChangeFillableFields()
 	{
+		$type = factory(\App\Type::class)->create();
 		$user = factory(\App\User::class)->create(
 			[
 				'name' => 'Jonh Smith',
@@ -161,13 +206,15 @@ class EventsControllerTest extends TestCase
 		            'title' => 'Jonh Papa',
 		            'summary' => 'john@papa.com',
 		            'description' => 'aaa aaa',
-					'user_id' => $user->id
+					'user_id' => $user->id,
+					'type_id' => $type->id
 		        ]);
         $this->notSeeInDatabase('events', [
                     'title' => 'Jonh Papa 2',
                     'summary' => 'john2@papa.com',
                     'description' => 'aaa aaa',
-					'user_id' => $user->id
+					'user_id' => $user->id,
+					'type_id' => $type->id
                 ]);
 
 		
@@ -176,14 +223,16 @@ class EventsControllerTest extends TestCase
 		            'title' => 'Jonh Papa 2',
 		            'summary' => 'john2@papa.com',
 		            'description' => 'aaa aaa',
-					'user_id' => $user->id
+					'user_id' => $user->id,
+					'type_id' => $type->id
 		        ]);
 		$this->seeStatusCode(200)->seeJson([
 		            'id' => 1,
 		            'title' => 'Jonh Papa 2',
 		            'summary' => 'john2@papa.com',
 		            'description' => 'aaa aaa',
-					'organizer' => $user->toArray()
+					'organizer' => $user->toArray(),
+					'type' => $type->toArray()
 		        ])->seeInDatabase('events', ['title' => 'Jonh Papa 2']);
 
         $body = json_decode($this->response->getContent(), true);
