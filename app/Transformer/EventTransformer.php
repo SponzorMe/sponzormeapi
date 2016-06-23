@@ -45,10 +45,10 @@ class EventTransformer extends TransformerAbstract
              'latitude'     => $event->latitude,
              'longitude'    => $event->longitude,
              'address'      => $event->address,
+             'timezone'     => $event->timezone,
              'end'          => Carbon::parse($event->end)->toIso8601String(),
              'start'        => Carbon::parse($event->start)->toIso8601String(),
-             'duration'     => Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)),
-             'address'      => $event->address,
+             'duration'     => Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)).' Hours',
              'created_at'   => $event->created_at->toIso8601String(),
              'updated_at'   => $event->updated_at->toIso8601String(),
              'released'     => $event->created_at->diffForHumans()

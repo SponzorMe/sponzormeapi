@@ -44,6 +44,7 @@ class EventTransformerTest extends TestCase
         $this->assertArrayHasKey('latitude', $transform);
         $this->assertArrayHasKey('longitude', $transform);
         $this->assertArrayHasKey('address', $transform);
+        $this->assertArrayHasKey('timezone', $transform);
 
         $this->assertArrayHasKey('type', $transform);
         $this->assertArrayHasKey('start', $transform);

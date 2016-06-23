@@ -50,6 +50,7 @@ class EventsControllerTest extends TestCase
 			   'type' => $event->type->toArray(),
 			   'tags' => $event->tags->toArray(),
 			   //Dates
+			   'timezone' => $event->timezone,
 			   'start' => Carbon::parse($event->start)->toIso8601String(),
 			   'end' => Carbon::parse($event->end)->toIso8601String(),
 			   'duration' => Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)),
@@ -88,14 +89,16 @@ class EventsControllerTest extends TestCase
 		$this->assertEquals($event->latitude, $data['latitude']);
 		$this->assertEquals($event->longitude, $data['longitude']);
 		$this->assertEquals($event->address, $data['address']);
+		$this->assertEquals($event->timezone, $data['timezone']);
 		//Foreigns
         $this->assertEquals($event->user->toArray(), $data['organizer']);
 		$this->assertEquals($event->type->toArray(), $data['type']);
 		$this->assertEquals($event->tags->toArray(), $data['tags']);
 		//Dates
+		$this->assertTrue(Carbon::parse($event->start)->lt(Carbon::parse($event->end)));
 		$this->assertEquals(Carbon::parse($event->start)->toIso8601String(), $data['start']);
 		$this->assertEquals(Carbon::parse($event->end)->toIso8601String(), $data['end']);
-		$this->assertEquals(Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)), $data['duration']);
+		$this->assertEquals(Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)).' Hours', $data['duration']);
 		$this->assertEquals($event->created_at->diffForHumans(), $data['released']);
         $this->assertEquals($event->created_at->toIso8601String(), $data['created_at']);
         $this->assertEquals($event->updated_at->toIso8601String(), $data['updated_at']);

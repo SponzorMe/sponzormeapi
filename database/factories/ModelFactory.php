@@ -20,6 +20,8 @@ $factory->define(App\User::class, function ($faker) {
 
 $factory->define(App\Event::class, function ($faker) {
     
+    $startDate = $faker->dateTimeThisMonth()->format('Y-m-d H:i:s');
+    $timezone = $faker->timezone;
     return [
         'title' => join(" ", $faker->sentences(rand(1, 1))),
         'description' => join(" ", $faker->sentences(rand(7, 9))),
@@ -34,8 +36,9 @@ $factory->define(App\Event::class, function ($faker) {
         'latitude' => $faker->latitude,
         'longitude' => $faker->longitude,
         'address' => $faker->address,
-        'start' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s') ,
-        'end' => $faker->dateTimeThisMonth()->format('Y-m-d H:i:s') ,
+        'start' =>  $startDate,
+        'end' => $faker->dateTimeBetween($startDate, $endDate = '+ 1 days', $timezone)->format('Y-m-d H:i:s') ,
+        'timezone' => $timezone,
         'type_id' => function () {
             return factory(App\Type::class)->create()->id;
         }

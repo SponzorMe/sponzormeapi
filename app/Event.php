@@ -13,7 +13,7 @@ class Event extends Model
     *
     * @var array
     */
-    protected $fillable = ['title', 'description', 'summary', 'user_id', 'type_id', 'image', 'language', 'is_private', 'is_outstanding', 'country', 'place_name', 'place_id', 'latitude', 'longitude', 'address', 'start', 'end'];
+    protected $fillable = ['title', 'description', 'summary', 'user_id', 'type_id', 'image', 'language', 'is_private', 'is_outstanding', 'country', 'place_name', 'place_id', 'latitude', 'longitude', 'address', 'start', 'end', 'timezone'];
 
     public function user() {
         return $this->belongsTo(User::class); 

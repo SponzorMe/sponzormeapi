@@ -15,10 +15,6 @@ class EventsTableSeeder extends Seeder
 			while ($eventsCount > 0) {
 				$event = factory(App\Event::class)->make();
 				$user->events()->save($event);
-				$tags = factory(\App\Tag::class, rand(1,5))->create();
-				$tags->each(function ($tag, $event) {
-					$tag->events()->attach($event);
-				});
 				$event->ratings()->saveMany(
 				                factory(App\Rating::class, rand(20, 50))->make()
 				            );

@@ -54,19 +54,11 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
         
         if ($count === 1) { 
             $events->user()->associate($user);
-            $tags = factory(\App\Tag::class, rand(1,5))->create();
-				$tags->each(function ($tag) {
-					$tag->events()->attach($events);
-				});
             $events->save();
         }
         else{
             foreach ($events as $event) { 
                 $event->user()->associate($user);
-                $tags = factory(\App\Tag::class, rand(1,5))->create();
-				$tags->each(function ($tag) {
-					$tag->events()->attach($event);
-				});
                 $event->save();
             }
         }
@@ -81,7 +73,7 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
     */
     protected function tagFactory($eventCount = 2) {
         if ($eventCount <= 1) {
-            throw new \RuntimeException('A bundle must have two or more books!');
+            throw new \RuntimeException('A tag must have two or more events!');
         }
         $tag = factory(\App\Tag::class)->create();
         $events  = $this->eventFactory($eventCount);
