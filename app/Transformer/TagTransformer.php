@@ -11,7 +11,7 @@ use League\Fractal\TransformerAbstract;
  */
 class TagTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = ['events'];
+    protected $availableIncludes = ['events'];
     /**
      * Include a bundle's books
      * @param Bundle $bundle
@@ -33,8 +33,8 @@ class TagTransformer extends TransformerAbstract
             'id' => $tag->id,
             'title' => $tag->title,
             'description' => $tag->description,
-            'created_at' => $tag->created_at->toIso8601String(), 
-            'updated_at' => $tag->updated_at->toIso8601String()
+            //'created_at' => $tag->created_at->toIso8601String(), 
+            //'updated_at' => $tag->updated_at->toIso8601String()
          ];
      }
 

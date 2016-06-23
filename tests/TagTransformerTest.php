@@ -38,10 +38,6 @@ class TagTransformerTest extends TestCase
         $this->assertEquals($tag->title, $actual['title']);
 
         $this->assertEquals($tag->description, $actual['description']);
-
-        $this->assertEquals($tag->created_at->toIso8601String(), $actual['created_at']);
-
-        $this->assertEquals($tag->updated_at->toIso8601String(), $actual['updated_at']);
     }
 
     /** @test **/

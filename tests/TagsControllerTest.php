@@ -34,37 +34,35 @@ class TagsControllerTest extends TestCase
         $this->assertEquals($tag->id, $data['id']);
         $this->assertEquals($tag->title, $data['title']);
         $this->assertEquals($tag->description, $data['description']);
-        $this->assertEquals($tag->created_at->toIso8601String(), $data['created_at']);
-        $this->assertEquals($tag->updated_at->toIso8601String(), $data['updated_at']);
 
         // Check that event data is in the response
-        $this->assertArrayHasKey('events', $data);
-        $events = $data['events'];
+        //$this->assertArrayHasKey('events', $data);
+        //$events = $data['events'];
 
         // Check that two events exist in the response
-        $this->assertArrayHasKey('data', $events);
-        $this->assertCount(2, $events['data']);
+        //$this->assertArrayHasKey('data', $events);
+        //$this->assertCount(2, $events['data']);
 
         // Verify keys for one event...
-        $this->assertEquals(
-            $tag->events[0]->title,
-            $events['data'][0]['title']
-        );
-        $this->assertEquals(
-            $tag->events[0]->description,
-            $events['data'][0]['description']
-        );
-        $this->assertEquals(
-            $tag->events[0]->user->toArray(), $events['data'][0]['organizer']
-        );
-        $this->assertEquals(
-            $tag->events[0]->created_at->toIso8601String(),
-            $events['data'][0]['created_at']
-        );
-        $this->assertEquals(
-            $tag->events[0]->updated_at->toIso8601String(),
-            $events['data'][0]['updated_at']
-        );
+        // $this->assertEquals(
+        //     $tag->events[0]->title,
+        //     $events['data'][0]['title']
+        // );
+        // $this->assertEquals(
+        //     $tag->events[0]->description,
+        //     $events['data'][0]['description']
+        // );
+        // $this->assertEquals(
+        //     $tag->events[0]->user->toArray(), $events['data'][0]['organizer']
+        // );
+        // $this->assertEquals(
+        //     $tag->events[0]->created_at->toIso8601String(),
+        //     $events['data'][0]['created_at']
+        // );
+        // $this->assertEquals(
+        //     $tag->events[0]->updated_at->toIso8601String(),
+        //     $events['data'][0]['updated_at']
+        // );
     }
 
     /** @test **/
@@ -89,12 +87,12 @@ class TagsControllerTest extends TestCase
 
         $this->assertArrayHasKey('data', $body);
         //Ensure the event id is in the response.
-        $this->assertArrayHasKey('events', $body['data']);
-        $this->assertArrayHasKey('data', $body['data']['events']);
+        // $this->assertArrayHasKey('events', $body['data']);
+        // $this->assertArrayHasKey('data', $body['data']['events']);
 
         //make sure the event is in the response
-        $events = $body['data']['events'];
-        $this->assertEquals($event->id, $events['data'][0]['id']);
+        // $events = $body['data']['events'];
+        // $this->assertEquals($event->id, $events['data'][0]['id']);
     }
 
     /** @test **/

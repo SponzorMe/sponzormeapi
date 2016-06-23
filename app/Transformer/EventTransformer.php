@@ -8,17 +8,23 @@ use Carbon\Carbon;
 
 class EventTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['tags', 'type'];
+    protected $defaultIncludes = ['tags', 'type', 'organizer'];
     
-    public function includeTags(Tag $tag)
+    public function includeTags(Event $event)
     {
         return $this->collection($event->tags, new TagTransformer());
     }
 
-    public function includeType(Type $type)
+    public function includeType(Event $event)
     {
         return $this->item($event->type, new TypeTransformer());
     }
+
+    public function includeOrganizer(Event $event)
+    {
+        return $this->item($event->user, new UserTransformer());
+    }
+    
     /**
      * Transform a Event model into an array
      * 
@@ -33,8 +39,6 @@ class EventTransformer extends TransformerAbstract
              'summary'      => $event->summary,
              'description'  => $event->description,
              'organizer'    => $event->user,
-             'tags'         => $event->tags,
-             'type'         => $event->type,
              'image'        => $event->image,
              'language'     => $event->language,
              'is_private'       => ($event->is_private) ? true : false,

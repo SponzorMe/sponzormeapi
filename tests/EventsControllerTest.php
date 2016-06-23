@@ -26,6 +26,7 @@ class EventsControllerTest extends TestCase
 		
         $content = json_decode($this->response->getContent(), true);
         $this->assertArrayHasKey('data', $content);
+		$body = $content['data'];
 
         foreach ($events as $event) {
            $this->seeJson([
@@ -45,10 +46,6 @@ class EventsControllerTest extends TestCase
 			   'latitude' => $event->latitude,
 			   'longitude' => $event->longitude,
 			   'address' => $event->address,
-			   //Foreigns
-			   'organizer' => $event->user->toArray(),
-			   'type' => $event->type->toArray(),
-			   'tags' => $event->tags->toArray(),
 			   //Dates
 			   'timezone' => $event->timezone,
 			   'start' => Carbon::parse($event->start)->toIso8601String(),
@@ -58,6 +55,10 @@ class EventsControllerTest extends TestCase
                'created_at' => $event->created_at->toIso8601String(),
                'updated_at' => $event->updated_at->toIso8601String()
            ]);
+		   //foreigns
+		   $this->assertArrayHasKey('organizer', $body[0]);
+		   $this->assertArrayHasKey('type', $body[0]);
+		   $this->assertArrayHasKey('tags', $body[0]);
         }
 	}
 	
@@ -91,9 +92,9 @@ class EventsControllerTest extends TestCase
 		$this->assertEquals($event->address, $data['address']);
 		$this->assertEquals($event->timezone, $data['timezone']);
 		//Foreigns
-        $this->assertEquals($event->user->toArray(), $data['organizer']);
-		$this->assertEquals($event->type->toArray(), $data['type']);
-		$this->assertEquals($event->tags->toArray(), $data['tags']);
+        $this->assertEquals($event->user->id, $data['organizer']['data']['id']);
+		$this->assertEquals($event->type->id, $data['type']['data']['id']);
+		$this->assertEquals($event->tags->toArray(), $data['tags']['data']);
 		//Dates
 		$this->assertTrue(Carbon::parse($event->start)->lt(Carbon::parse($event->end)));
 		$this->assertEquals(Carbon::parse($event->start)->toIso8601String(), $data['start']);
@@ -164,7 +165,7 @@ class EventsControllerTest extends TestCase
 		$this->assertEquals('My Fake Event', $data['title']);
 		$this->assertEquals('loremp Ipsump', $data['summary']);
 		$this->assertEquals('simplicy is the last sofistication', $data['description']);
-		$this->assertEquals($user->toArray(), $data['organizer']);
+		$this->assertEquals($user->id, $data['organizer']['data']['id']);
         $this->assertTrue($data['id'] > 0, 'Expected a positive integer, but did not see one.');
 
         $this->assertArrayHasKey('created_at', $data);
@@ -257,8 +258,6 @@ class EventsControllerTest extends TestCase
 		            'title' => 'My Fake Event 2',
 		            'summary' => 'Summary of my fake event 2',
 		            'description' => 'aaa aaa',
-					'organizer' => $user->toArray(),
-					'type' => $type->toArray(),
 		        	'start' =>  $startDate,
         			'end' => $endDate,
 					'timezone' => $timezone

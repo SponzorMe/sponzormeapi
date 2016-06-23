@@ -46,14 +46,11 @@ class EventTransformerTest extends TestCase
         $this->assertArrayHasKey('address', $transform);
         $this->assertArrayHasKey('timezone', $transform);
 
-        $this->assertArrayHasKey('type', $transform);
         $this->assertArrayHasKey('start', $transform);
-        $this->assertArrayHasKey('tags', $transform);
         $this->assertArrayHasKey('end', $transform);
         $this->assertArrayHasKey('duration', $transform);
         $this->assertArrayHasKey('released', $transform);
 
-        $this->assertArrayHasKey('organizer', $transform);
         $this->assertArrayHasKey('created_at', $transform);
         $this->assertArrayHasKey('updated_at', $transform);
 
