@@ -53,7 +53,7 @@ class EventsControllerTest extends TestCase
 			   'timezone' => $event->timezone,
 			   'start' => Carbon::parse($event->start)->toIso8601String(),
 			   'end' => Carbon::parse($event->end)->toIso8601String(),
-			   'duration' => Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)),
+			   'duration' => Carbon::parse($event->start)->diffInHours(Carbon::parse($event->end)). ' Hours',
                'released' => $event->created_at->diffForHumans(),
                'created_at' => $event->created_at->toIso8601String(),
                'updated_at' => $event->updated_at->toIso8601String()
@@ -140,14 +140,20 @@ class EventsControllerTest extends TestCase
 				'type' => 0,
 			]
 		);
+
 		$type = factory(\App\Type::class)->create();
+
+		$eventValuable = factory(\App\Event::class)->make();
 		
 		$this->post('/events', [
-		            'title' => 'Jonh Smith',
-		            'summary' => 'jonh@smith.com',
-		            'description' => 'aaa aaa',
+		            'title' => 'My Fake Event',
+		            'summary' => 'loremp Ipsump',
+		            'description' => 'simplicy is the last sofistication',
 					'user_id' => $user->id,
-					'type_id' => $type->id
+					'type_id' => $type->id,
+					'start' =>  $eventValuable->start,
+        			'end' => $eventValuable->end,
+					'timezone' => $eventValuable->timezone
 		        ]);
 		
 		$body = json_decode($this->response->getContent(), true);
@@ -155,9 +161,9 @@ class EventsControllerTest extends TestCase
 		
 		$data = $body['data'];
 		
-		$this->assertEquals('Jonh Smith', $data['title']);
-		$this->assertEquals('jonh@smith.com', $data['summary']);
-		$this->assertEquals('aaa aaa', $data['description']);
+		$this->assertEquals('My Fake Event', $data['title']);
+		$this->assertEquals('loremp Ipsump', $data['summary']);
+		$this->assertEquals('simplicy is the last sofistication', $data['description']);
 		$this->assertEquals($user->toArray(), $data['organizer']);
         $this->assertTrue($data['id'] > 0, 'Expected a positive integer, but did not see one.');
 
@@ -166,7 +172,7 @@ class EventsControllerTest extends TestCase
         $this->assertArrayHasKey('updated_at', $data);
         $this->assertEquals(Carbon::now()->toIso8601String(), $data['updated_at']);
 		
-		$this->seeInDatabase('events', ['title' => 'Jonh Smith']);
+		$this->seeInDatabase('events', ['title' => 'My Fake Event']);
 	}
 	
 	
@@ -181,12 +187,17 @@ class EventsControllerTest extends TestCase
 				'type' => 0,
 			]
 		);
+		$eventValuable = factory(\App\Event::class)->make();
+		
 		$this->post('/events', [
-		            'title' => 'Jonh Smith',
-		            'summary' => 'jonh@smith.com',
-		            'description' => 'aaa aaa',
+		            'title' => 'My Fake Event',
+		            'summary' => 'loremp Ipsump',
+		            'description' => 'simplicy is the last sofistication',
 					'user_id' => $user->id,
-					'type_id' => $type->id
+					'type_id' => $type->id,
+					'start' =>  $eventValuable->start,
+        			'end' => $eventValuable->end,
+					'timezone' => $eventValuable->timezone
 		        ]);
 		
 		$this->seeStatusCode(201)->seeHeaderWithRegExp('Location', '#/events/[\d]+$#');
@@ -197,6 +208,9 @@ class EventsControllerTest extends TestCase
 	public function testUpdateShouldOnlyChangeFillableFields()
 	{
 		$type = factory(\App\Type::class)->create();
+		$startDate = Carbon::now()->toIso8601String();
+		$endDate = Carbon::now()->addHours(2)->toIso8601String();
+    	$timezone = Carbon::now()->tzName;
 		$user = factory(\App\User::class)->create(
 			[
 				'name' => 'Jonh Smith',
@@ -206,37 +220,49 @@ class EventsControllerTest extends TestCase
 		);
 
 		$event = factory('App\Event')->create([
-		            'title' => 'Jonh Papa',
-		            'summary' => 'john@papa.com',
+		            'title' => 'My Fake Event',
+		            'summary' => 'Summary of my fake event',
 		            'description' => 'aaa aaa',
 					'user_id' => $user->id,
-					'type_id' => $type->id
+					'type_id' => $type->id,
+		        	'start' =>  $startDate,
+        			'end' => $endDate,
+					'timezone' => $timezone
 		        ]);
         $this->notSeeInDatabase('events', [
-                    'title' => 'Jonh Papa 2',
-                    'summary' => 'john2@papa.com',
+                    'title' => 'My Fake Event 2',
+                    'summary' => 'Summary of my fake event 2',
                     'description' => 'aaa aaa',
 					'user_id' => $user->id,
-					'type_id' => $type->id
+					'type_id' => $type->id,
+		        	'start' =>  $startDate,
+        			'end' => $endDate,
+					'timezone' => $timezone
                 ]);
 
 		
 		$this->put("/events/{$event->id}", [
 		            'id' => 5,
-		            'title' => 'Jonh Papa 2',
-		            'summary' => 'john2@papa.com',
+		            'title' => 'My Fake Event 2',
+		            'summary' => 'Summary of my fake event 2',
 		            'description' => 'aaa aaa',
 					'user_id' => $user->id,
-					'type_id' => $type->id
+					'type_id' => $type->id,
+		        	'start' =>  $startDate,
+        			'end' => $endDate,
+					'timezone' => $timezone
 		        ]);
 		$this->seeStatusCode(200)->seeJson([
 		            'id' => 1,
-		            'title' => 'Jonh Papa 2',
-		            'summary' => 'john2@papa.com',
+		            'title' => 'My Fake Event 2',
+		            'summary' => 'Summary of my fake event 2',
 		            'description' => 'aaa aaa',
 					'organizer' => $user->toArray(),
-					'type' => $type->toArray()
-		        ])->seeInDatabase('events', ['title' => 'Jonh Papa 2']);
+					'type' => $type->toArray(),
+		        	'start' =>  $startDate,
+        			'end' => $endDate,
+					'timezone' => $timezone
+		        ])->seeInDatabase('events', ['title' => 'My Fake Event 2']);
 
         $body = json_decode($this->response->getContent(), true);
 

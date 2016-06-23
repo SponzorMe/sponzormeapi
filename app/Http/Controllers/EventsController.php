@@ -19,7 +19,10 @@ class EventsController extends Controller
             'summary' => 'required',
             'description' => 'required',
             'user_id' => 'required|exists:users,id',
-            'type_id' => 'required|exists:types,id'
+            'type_id' => 'required|exists:types,id',
+            'start' => 'required|date',
+            'end' => 'required|date|after:start',
+            'timezone' => 'required|timezone'
         ];
 
     /**
