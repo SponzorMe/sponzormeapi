@@ -27,7 +27,7 @@ class EventTransformer extends TransformerAbstract
 
     public function includeSponsorshipTypes(Event $event)
     {
-        return $this->collection($event->sponsorshipTypes, new UserTransformer());
+        return $this->collection($event->sponsorshipTypes, new SponsorshipTypeTransformer());
     }
     
     /**
