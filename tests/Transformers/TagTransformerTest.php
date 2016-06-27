@@ -1,5 +1,6 @@
 <?php
-
+namespace Tests\Transformers;
+use TestCase;
 use App\Tag;
 use App\Transformer\TagTransformer;
 use League\Fractal\TransformerAbstract;
@@ -45,7 +46,7 @@ class TagTransformerTest extends TestCase
 	{
         $tag = $this->tagFactory();
         $data = $this->subject->includeEvents($tag);
-        $this->assertInstanceOf(League\Fractal\Resource\Collection::class, $data);
+        $this->assertInstanceOf(\League\Fractal\Resource\Collection::class, $data);
         $this->assertInstanceOf(\App\Event::class, $data->getData()[0]);
 		$this->assertCount(2, $data->getData());
 	}

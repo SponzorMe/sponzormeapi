@@ -1,5 +1,7 @@
 <?php 
 
+namespace Tests\Controllers\Validation;
+use TestCase;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Illuminate\Http\Response;
 

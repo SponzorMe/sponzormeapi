@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class EventTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = ['tags', 'type', 'organizer'];
+    protected $defaultIncludes = ['tags', 'type', 'organizer', 'sponsorship_types'];
     
     public function includeTags(Event $event)
     {
@@ -23,6 +23,11 @@ class EventTransformer extends TransformerAbstract
     public function includeOrganizer(Event $event)
     {
         return $this->item($event->user, new UserTransformer());
+    }
+
+    public function includeSponsorshipTypes(Event $event)
+    {
+        return $this->collection($event->sponsorshipTypes, new UserTransformer());
     }
     
     /**

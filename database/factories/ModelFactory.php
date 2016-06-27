@@ -70,3 +70,12 @@ $factory->define(\App\Rating::class, function ($faker) {
         'value' => rand(1, 5)
     ];
 });
+
+$factory->define(\App\SponsorshipType::class, function ($faker) { 
+    $title = $faker->sentence(rand(1,3));
+    return [
+        'kind'=> substr($title, 0, strlen($title) - 1),
+        'cost'=>$faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 200),
+        'total_slots'=> rand(1, 5)
+    ];
+});

@@ -40,6 +40,16 @@ $app->post('/events', 'EventsController@store');
 $app->put('/events/{id:[\d]+}', 'EventsController@update');
 $app->delete('/events/{id:[\d]+}', 'EventsController@destroy');
 
+/** @sponsorship_types **/
+$app->get('/sponsorship_types', 'SponsorshipTypesController@index');
+$app->get('/sponsorship_types/{id:[\d]+}', [
+    'as'    => 'sponsorship_types.show',
+    'uses'  => 'SponsorshipTypesController@show'
+]);
+$app->post('/sponsorship_types', 'SponsorshipTypesController@store');
+$app->put('/sponsorship_types/{id:[\d]+}', 'SponsorshipTypesController@update');
+$app->delete('/sponsorship_types/{id:[\d]+}', 'SponsorshipTypesController@destroy');
+
 $app->group([
     'prefix' => '/tags',
     'namespace' => 'App\Http\Controllers'

@@ -18,6 +18,12 @@ class EventsTableSeeder extends Seeder
 				$event->ratings()->saveMany(
 				                factory(App\Rating::class, rand(20, 50))->make()
 				            );
+				//adding the sponsorship Type
+				$sponsorshipTypesCount = rand(1, 5);
+				while ($sponsorshipTypesCount > 0) {
+					$event->sponsorshipTypes()->save(factory(App\SponsorshipType::class)->make());
+					$sponsorshipTypesCount--;
+				}
 				$eventsCount--;
 			}
 		}

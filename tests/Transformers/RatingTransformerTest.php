@@ -1,5 +1,6 @@
 <?php 
-
+namespace Tests\Transformers;
+use TestCase;
 use App\Transformer\RatingTransformer;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 

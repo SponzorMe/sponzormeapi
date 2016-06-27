@@ -1,5 +1,10 @@
 <?php
 
+
+
+
+namespace Tests\Transformers;
+use TestCase;
 use App\Event;
 use App\Transformer\EventTransformer;
 use League\Fractal\TransformerAbstract;

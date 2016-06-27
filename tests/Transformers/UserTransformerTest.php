@@ -1,5 +1,6 @@
 <?php
-
+namespace Tests\Transformers;
+use TestCase;
 use App\User;
 use App\Transformer\UserTransformer;
 use League\Fractal\TransformerAbstract;

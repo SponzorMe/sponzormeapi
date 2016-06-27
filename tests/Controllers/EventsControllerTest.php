@@ -1,5 +1,10 @@
 <?php
 
+namespace Tests\Controllers;
+
+
+use TestCase;
+
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Carbon\Carbon;

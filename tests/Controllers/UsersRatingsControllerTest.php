@@ -1,5 +1,8 @@
 <?php
 
+
+namespace Tests\Controllers;
+use TestCase;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 
 class UsersRatingsControllerTest extends TestCase

@@ -66,6 +66,28 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
         return $events;
     }
     /**
+    * Convenience method for creating a event with an organizer
+    *
+    * @param int $count
+    * @return mixed
+    */
+    protected function sponsorshipTypeFactory($count = 1) {
+        $event  = $this->eventFactory();
+        $sponsorshipTypes  = factory(\App\SponsorshipType::class, $count)->make();
+        if ($count === 1) { 
+            $sponsorshipTypes->event()->associate($event);
+            $sponsorshipTypes->save();
+        }
+        else{
+            foreach ($sponsorshipTypes as $sponsorshipType) { 
+                $sponsorshipType->event()->associate($event);
+                $sponsorshipType->save();
+            }
+        }
+
+        return $sponsorshipTypes;
+    }
+    /**
     * Convenience method for creating a event with tags
     *
     * @param int $count
