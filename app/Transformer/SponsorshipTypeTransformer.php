@@ -17,9 +17,9 @@ class SponsorshipTypeTransformer extends TransformerAbstract
      * @param Bundle $bundle
      * @return \League\Fractal\Resource\Collection
      */
-    public function includeEvent(Type $type) 
+    public function includeEvent(SponsorshipType $sponsorshipType) 
     {
-        return $this->item($type->event, new EventTransformer()); 
+        return $this->item($sponsorshipType->event, new EventTransformer()); 
     }
     /**
      * Transform a Tag model into an array
