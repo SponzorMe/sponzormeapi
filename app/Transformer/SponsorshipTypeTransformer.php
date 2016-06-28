@@ -12,8 +12,18 @@ use League\Fractal\TransformerAbstract;
 class SponsorshipTypeTransformer extends TransformerAbstract
 {
     protected $availableIncludes = ['event'];
+    protected $defaultIncludes = ['perks'];
     /**
      * Include a bundle's books
+     * @param Bundle $bundle
+     * @return \League\Fractal\Resource\Collection
+     */
+    public function includePerks(SponsorshipType $sponsorshipType) 
+    {
+        return $this->collection($sponsorshipType->perks, new PerkTransformer()); 
+    }
+    /**
+     * Include an event
      * @param Bundle $bundle
      * @return \League\Fractal\Resource\Collection
      */
@@ -22,9 +32,9 @@ class SponsorshipTypeTransformer extends TransformerAbstract
         return $this->item($sponsorshipType->event, new EventTransformer()); 
     }
     /**
-     * Transform a Tag model into an array
+     * Transform a SponsorshipType model into an array
      * 
-     * @param Tag $tag
+     * @param SponsorshipType $sponsorshipType
      * @return array
      */
      public function transform(SponsorshipType $sponsorshipType)

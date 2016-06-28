@@ -17,4 +17,7 @@ class SponsorshipType extends Model
     public function event() {
         return $this->belongsTo(Event::class); 
     }
+    public function perks(){
+        return $this->hasMany(Perk::class);
+    }
 }

@@ -66,7 +66,7 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
         return $events;
     }
     /**
-    * Convenience method for creating a event with an organizer
+    * Convenience method for creating an sponsorship type with an event
     *
     * @param int $count
     * @return mixed
@@ -86,6 +86,28 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
         }
 
         return $sponsorshipTypes;
+    }
+    /**
+    * Convenience method for creating an Perk type with an sponsorship type
+    *
+    * @param int $count
+    * @return mixed
+    */
+    protected function perkFactory($count = 1) {
+        $sponsorshipType  = $this->sponsorshipTypeFactory();
+        $perks  = factory(\App\Perk::class, $count)->make();
+        if ($count === 1) { 
+            $perks->sponsorshipType()->associate($sponsorshipType);
+            $perks->save();
+        }
+        else{
+            foreach ($perks as $perk) {
+                $perk->sponsorshipType()->associate($sponsorshipType);
+                $perk->save();
+            }
+        }
+
+        return $perks;
     }
     /**
     * Convenience method for creating a event with tags
