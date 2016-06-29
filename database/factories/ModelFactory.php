@@ -14,7 +14,9 @@ $factory->define(App\User::class, function ($faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
-        'type' => rand(0,1)
+        'type' => rand(1, 6) % 2 === 0 ? 'organizer' : 'sponsor',
+        'gender' => rand(1, 6) % 2 === 0 ? 'male' : 'female',
+        'language' => $faker->languageCode
     ];
 });
 
@@ -62,6 +64,16 @@ $factory->define(\App\Type::class, function($faker){
     return[
         'title' => substr($title, 0, strlen($title) - 1),
         'description' => $faker->text
+    ];
+});
+
+$factory->define(\App\Sponsorship::class, function($faker){
+    
+    $title = $faker->sentence(rand(3,10));
+
+    return[
+        'cause' => substr($title, 0, strlen($title) - 1),
+        'status' => rand(1, 6) % 2 === 0 ? 'accepted' : 'pending',
     ];
 });
 
