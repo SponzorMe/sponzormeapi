@@ -35,6 +35,7 @@ class TaskTransformerTest extends TestCase
         $this->assertArrayHasKey('owner_id', $transform);
         $this->assertArrayHasKey('sponsorship_id', $transform);
         $this->assertArrayHasKey('text', $transform);
+        $this->assertArrayHasKey('status', $transform);
         $this->assertArrayHasKey('created_at', $transform);
         $this->assertArrayHasKey('updated_at', $transform);
     }

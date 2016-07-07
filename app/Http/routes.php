@@ -70,6 +70,16 @@ $app->post('/sponsorships', 'SponsorshipsController@store');
 $app->put('/sponsorships/{id:[\d]+}', 'SponsorshipsController@update');
 $app->delete('/sponsorships/{id:[\d]+}', 'SponsorshipsController@destroy');
 
+/** @tasks **/
+$app->get('/tasks', 'TasksController@index');
+$app->get('/tasks/{id:[\d]+}', [
+    'as'    => 'tasks.show',
+    'uses'  => 'TasksController@show'
+]);
+$app->post('/tasks', 'TasksController@store');
+$app->put('/tasks/{id:[\d]+}', 'TasksController@update');
+$app->delete('/tasks/{id:[\d]+}', 'TasksController@destroy');
+
 /** @tags **/
 $app->group([
     'prefix' => '/tags',

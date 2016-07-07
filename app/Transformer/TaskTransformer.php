@@ -34,6 +34,7 @@ class TaskTransformer extends TransformerAbstract
             'text' => $task->text,
             'owner_id' => $task->owner_id,
             'sponsorship_id' => $task->sponsorship_id,
+            'status' => $task->status,
             'created_at' => $task->created_at->toIso8601String(), 
             'updated_at' => $task->updated_at->toIso8601String()
          ];
