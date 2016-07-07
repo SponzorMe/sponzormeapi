@@ -60,6 +60,17 @@ $app->post('/perks', 'PerksController@store');
 $app->put('/perks/{id:[\d]+}', 'PerksController@update');
 $app->delete('/perks/{id:[\d]+}', 'PerksController@destroy');
 
+/** @sponsorships **/
+$app->get('/sponsorships', 'SponsorshipsController@index');
+$app->get('/sponsorships/{id:[\d]+}', [
+    'as'    => 'sponsorships.show',
+    'uses'  => 'SponsorshipsController@show'
+]);
+$app->post('/sponsorships', 'SponsorshipsController@store');
+$app->put('/sponsorships/{id:[\d]+}', 'SponsorshipsController@update');
+$app->delete('/sponsorships/{id:[\d]+}', 'SponsorshipsController@destroy');
+
+/** @tags **/
 $app->group([
     'prefix' => '/tags',
     'namespace' => 'App\Http\Controllers'
