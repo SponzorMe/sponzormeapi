@@ -137,6 +137,23 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
         return $sponsorships;
     }
     /**
+    * Convenience method for creating an Task with an sponsorship and Owner
+    *
+    * @param int $count
+    * @return mixed
+    */
+     protected function taskFactory($count = 1) {
+        $sponsorship = $this->sponsorshipFactory();
+        $user = factory(\App\User::class)->create();
+        $tasks = factory(App\Task::class, $count)->create([
+            'type'=>$user->type,
+            'owner_id' => $user->id,
+            'sponsorship_id'=> $sponsorship->id
+        ]);
+
+        return $tasks;
+    }
+    /**
     * Convenience method for creating a event with tags
     *
     * @param int $count

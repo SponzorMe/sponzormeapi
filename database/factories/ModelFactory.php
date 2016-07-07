@@ -77,6 +77,16 @@ $factory->define(\App\Sponsorship::class, function($faker){
     ];
 });
 
+$factory->define(\App\Task::class, function($faker){
+    
+    $title = $faker->sentence(rand(3,10));
+
+    return[
+        'text' => substr($title, 0, strlen($title) - 1),
+        'status' => rand(1, 6) % 2 === 0 ? 'completed' : 'pending'
+    ];
+});
+
 $factory->define(\App\Perk::class, function($faker){
     
     $title = $faker->sentence(rand(3,10));

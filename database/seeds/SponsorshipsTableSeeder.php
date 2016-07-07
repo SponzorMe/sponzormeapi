@@ -27,6 +27,7 @@ class SponsorshipTableSeeder extends Seeder
                     while($perksCount>0){
                         $perk = factory(App\Perk::class)->make();
                         $sponsorshipType->perks()->save($perk);
+                        
                         $perksCount--;
                     }
                     $sponsorshipTypesCount--;
@@ -36,6 +37,24 @@ class SponsorshipTableSeeder extends Seeder
                     $sponsorship->save();
                     $sponsorshipType->used_slots = $sponsorshipType->used_slots+1;
                     $sponsorshipType->save();
+                    $tasks = [];
+                    $sponsorshipType->perks()->each(function($p){
+                        $task[] = factory(App\Task::class)->make([
+                            'text'=>$p->title,
+                            'type'=>0
+                        ]);
+                        
+                    });
+                    for ($i=0; $i < count($tasks); $i++) { 
+                       $tasks[$i]->owner()->associate($organizer);
+                    }
+                    $sponsorship->tasks()->saveMany($tasks); 
+                    $sponsorTasksCount = rand(1, 3);
+                    $tasks = factory(App\Task::class, $sponsorTasksCount)->create([
+                        'type'=>1,
+                        'owner_id' => $sponsor->id,
+                        'sponsorship_id'=> $sponsorship->id
+                    ]);
                 }
                 $eventsCount--;
             }

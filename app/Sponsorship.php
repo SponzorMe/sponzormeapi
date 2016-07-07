@@ -20,4 +20,7 @@ class Sponsorship extends Model
     public function sponsorshipType() {
         return $this->belongsTo(SponsorshipType::class, 'sponsorship_type_id'); 
     }
+    public function tasks(){
+        return $this->hasMany(Task::class); 
+    }
 }
