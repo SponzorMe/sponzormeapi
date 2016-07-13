@@ -128,6 +128,85 @@ class SponsorshipsControllerTest extends TestCase
         $this->assertEquals(Carbon::now()->toIso8601String(), $data['updated_at']);
 	}
 
+	/** @test **/
+	public function testUpdateShouldChangeStatus()
+	{
+		$sponsorship_type = $this->sponsorshipTypeFactory();
+        $user = factory(\App\User::class)->create();
+
+		$sponsorship = factory('App\Sponsorship')->create([
+		            'cause' => 'My Fake Sponsorship Cause',
+		            'sponsorship_type_id' => $sponsorship_type->id,
+                    'sponsor_id' => $user->id,
+					'status' => 'pending'
+		        ]);
+        $this->notSeeInDatabase('sponsorships', [
+                    'cause' => 'My Fake Sponsorship Cause 2',
+		            'sponsorship_type_id' => $sponsorship_type->id,
+                    'sponsor_id' => $user->id,
+					'status' => 'pending'
+                ]);
+
+		
+		$this->put("/sponsorships/{$sponsorship->id}", [
+		            'cause' => 'My Fake Sponsorship Cause 2',
+		            'sponsorship_type_id' => $sponsorship_type->id,
+                    'sponsor_id' => $user->id,
+					'status' => 'accepted'
+		        ]);
+		$this->seeStatusCode(200)->seeJson([
+		            'cause' => 'My Fake Sponsorship Cause 2',
+		            'sponsorship_type_id' => $sponsorship_type->id,
+                    'sponsor_id' => $user->id,
+					'status' => 'accepted'
+		        ])->seeInDatabase('sponsorships', ['cause' => 'My Fake Sponsorship Cause 2']);
+
+        $body = json_decode($this->response->getContent(), true);
+
+        $this->assertArrayHasKey('data', $body); 
+
+        $data = $body['data'];
+
+        $this->assertArrayHasKey('created_at', $data);
+        $this->assertEquals(Carbon::now()->toIso8601String(), $data['created_at']);
+        $this->assertArrayHasKey('updated_at', $data);
+        $this->assertEquals(Carbon::now()->toIso8601String(), $data['updated_at']);
+	}
+
+	/** @test **/
+	public function testUpdateShouldNotChangeStatus()
+	{
+		$sponsorship_type = $this->sponsorshipTypeFactory();
+		$sponsorship_type->used_slots = $sponsorship_type->total_slots;
+		$sponsorship_type->save();
+
+        $user = factory(\App\User::class)->create();
+
+		$sponsorship = factory('App\Sponsorship')->create([
+		            'cause' => 'My Fake Sponsorship Cause',
+		            'sponsorship_type_id' => $sponsorship_type->id,
+                    'sponsor_id' => $user->id,
+					'status' => 'pending'
+		        ]);
+        $this->notSeeInDatabase('sponsorships', [
+                    'cause' => 'My Fake Sponsorship Cause 2',
+		            'sponsorship_type_id' => $sponsorship_type->id,
+                    'sponsor_id' => $user->id,
+					'status' => 'pending'
+                ]);
+
+		
+		$this->put("/sponsorships/{$sponsorship->id}", [
+		            'cause' => 'My Fake Sponsorship Cause 2',
+		            'sponsorship_type_id' => $sponsorship_type->id,
+                    'sponsor_id' => $user->id,
+					'status' => 'accepted'
+		        ]);
+		$this->seeStatusCode(422)->seeJson([
+		            'error' => 'No Slots Available no status can be changed to accepted',
+		        ])->notSeeInDatabase('sponsorships', ['cause' => 'My Fake Sponsorship Cause 2']);
+	}
+
     /** @test **/
 	public function testUpdateShouldFailWithInvalidId()
 	{
