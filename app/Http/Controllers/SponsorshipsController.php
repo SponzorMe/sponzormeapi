@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Sponsorship;
+use App\SponsorshipType;
+use App\Task;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 use App\Transformer\SponsorshipTransformer;
@@ -49,7 +51,7 @@ class SponsorshipsController extends Controller
 
         if($validator->fails()) {
             return response()->json($validator->errors()->toArray(), 422);
-        }    
+        }
 
         $sponsorship = Sponsorship::create($request->all());
         $data = $this->item($sponsorship, new SponsorshipTransformer());
@@ -79,8 +81,50 @@ class SponsorshipsController extends Controller
             return response()->json($validator->errors()->toArray(), 422);
         }   
 
+        //If code is here we need perform 3 things:
+        // 0. Verify we are changin pending to accepted
+        // 1. We should verify theres an available slot in the sponsorship-Type
+        // 1a. If not we return invalid Request
+        // 1b. If yes we need get the perks associate to the sponsorship-Type
+        // 2. We copy the perks in the tasks Model
+        // 3. Decrement the sponsorships slots.
+
+        //0a
+        if($sponsorship->status == 'pending' && $request->input('status') == 'accepted'){
+            //1
+            $sponsorshipType = SponsorshipType::find($request->input('sponsorship_type_id'));
+            if($sponsorshipType->total_slots <= $sponsorshipType->used_slots){
+                return response()->json(['error'=> 'No Slots Available no status can be changed to accepted', 'message'=>'No updated'], 422);
+            }
+            else{
+                //1b.
+                $perks = SponsorshipType::find($request->input('sponsorship_type_id'))->perks;
+                //2
+                foreach ($perks as $p) {
+                    $t = ['text'=>$p->title, 'owner_id'=>$request->input('sponsor_id'), 'sponsorship_id'=>$sponsorship->id, 'status'=>'pending', 'type'=>0];
+                    Task::create($t);
+                }
+                //3
+                $sponsorshipType->used_slots += 1;
+                $sponsorshipType->save();
+            }
+        }//0b
+        else if($sponsorship->status == 'accepted' && $request->input('status') == 'pending'){
+            //1
+            $sponsorshipType = SponsorshipType::find($request->input('sponsorship_type_id'));
+            //1b.
+            $tasks = Sponsorship::find($id)->tasks;
+            //2
+            foreach ($tasks as $t) {
+                $t->delete();
+            }
+            //3
+            $sponsorshipType->used_slots -= 1;
+            $sponsorshipType->save();
+        }
         $sponsorship->fill($request->all());
-        $sponsorship->save(); 
+        $sponsorship->save();
+        $sponsorship = Sponsorship::findOrFail($id);
         return $this->item($sponsorship, new SponsorshipTransformer());
     }
     /**
